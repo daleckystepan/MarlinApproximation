@@ -17,7 +17,7 @@ float jd_lut_A[jd_lut_count] = {};
 float jd_lut_B[jd_lut_count] = {};
 float jd_lut_C[jd_lut_count] = {};
 
-float jd_marlin(float junction_cos_theta)
+inline float jd_marlin(float junction_cos_theta)
 {
     const float neg = junction_cos_theta < 0 ? -1 : 1,
     t = neg * junction_cos_theta,
@@ -35,11 +35,8 @@ inline float approx(float junction_cos_theta)
 {
     const float neg = junction_cos_theta < 0 ? -1 : 1,
                       t = neg * junction_cos_theta;
-
     const int16_t idx = (t == 0.0f) ? 0 : __builtin_clz(uint16_t((1.0f - t) * jd_lut_tll)) - jd_lut_tll0;
-
     float junction_theta = t * jd_lut_k[idx]+ jd_lut_b[idx];
-
     if (neg < 0) junction_theta = M_PI - junction_theta;
               return junction_theta;
     return junction_theta;
@@ -48,35 +45,19 @@ inline float approx(float junction_cos_theta)
 inline float acos_inv(float x)
 {
     const float t = (x+1)*0.5;
-
     const int16_t idx = (t == 0.0f) ? 0 : __builtin_clz(uint16_t((1.0f - t) * jd_lut_tll)) - jd_lut_tll0;
-
     return x * jd_lut_k_inv[idx] + jd_lut_b_inv[idx];
 }
 
 inline float acos_inv_q(float x)
 {
     const float t = (x+1)*0.5;
-
     const int16_t idx = (t == 0.0f) ? 0 : __builtin_clz(uint16_t((1.0f - t) * jd_lut_tll)) - jd_lut_tll0;
-
-    //std::cerr << idx << " " << x <<  " " << x * x * jd_lut_C[idx] + x * jd_lut_B[idx] + jd_lut_A[idx] << std::endl;
-
     const float ret =  x * (x * jd_lut_C[idx] + jd_lut_B[idx]) + jd_lut_A[idx];  // Improves precision
-
     return ret;
 }
 
 void printLUT(const char *name, float *lut)
-{
-    std::cerr << std::setprecision(FLT_DECIMAL_DIG) << name << ": " << std::endl;
-    for(int i = 0; i < jd_lut_count; ++i) {
-        std::cerr << lut[i] << "f, ";
-    }
-    std::cerr << std::endl; 
-}
-
-void printLUT(const char *name, double *lut)
 {
     std::cerr << std::setprecision(FLT_DECIMAL_DIG) << name << ": " << std::endl;
     for(int i = 0; i < jd_lut_count; ++i) {
@@ -150,14 +131,11 @@ int main()
     x0 = (pow(2,jd_lut_count-1) - 1)/pow(2,jd_lut_count-1);
     x0 = 2*x0 - 1;
     y0 = 1.0/acos(x0)*c_inv_q;
-
     double x2 = 0.999999f;
     double y2 = 1.0/acos(x2);
-
     // Center between x0 and x2
     x1 = cos(1.0/y0/2 + 1.0/y2/2);
     y1 = 1.0/acos(x1)*c_inv_q;
-
     double d = 1.0/((x0-x1)*(x0-x2)*(x2-x1));
     jd_lut_A[jd_lut_count-1] = - d*x0*x0*x1*y2 + d*x0*x0*x2*y1 + d*x0*x1*x1*y2 - d*x0*x2*x2*y1 - d*x1*x1*x2*y0 + d*x1*x2*x2*y0;
     jd_lut_B[jd_lut_count-1] = - d*x0*x0*y1 + d*x0*x0*y2 + d*x1*x1*y0 - d*x1*x1*y2 - d*x2*x2*y0 + d*x2*x2*y1;
@@ -169,9 +147,9 @@ int main()
     //printLUT("B", jd_lut_b);
     //printLUT("K-inv", jd_lut_k_inv);
     //printLUT("B-inv", jd_lut_b_inv);
-    printLUT("A", jd_lut_A);
-    printLUT("B", jd_lut_B);
-    printLUT("C", jd_lut_C);
+    //printLUT("A", jd_lut_A);
+    //printLUT("B", jd_lut_B);
+    //printLUT("C", jd_lut_C);
 
     std::cerr << "Plotting data" << std::endl;
     double min = 1.0f/0.0f;
