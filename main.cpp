@@ -176,7 +176,7 @@ int main()
     std::cerr << "Plotting data" << std::endl;
     double min = 1.0f/0.0f;
     double max = -min;
-    for(double t = -1; t < 0.999999f; t += 0.000025)
+    for(double t = 0.65; t < 0.999999f; t += 0.000025)
     {
         std::cout << t << " " 
                   << 1.0/acos(t) << " " 
