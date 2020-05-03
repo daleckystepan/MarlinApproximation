@@ -180,8 +180,8 @@ int main()
     {
         std::cout << t << " " 
                   << 1.0/acos(t) << " " 
-                  << 1.0/jd_marlin(t) << " " << 1.0/acos(t) - 1.0/jd_marlin(t) << " "
-                  << 1.0/approx(t)    << " " << 1.0/acos(t) - 1.0/approx(t)    << " "
+                  << 1.0f/jd_marlin(t) << " " << 1.0/acos(t) - 1.0f/jd_marlin(t) << " "
+                  << 1.0f/approx(t)    << " " << 1.0/acos(t) - 1.0f/approx(t)    << " "
                   << acos_inv(t)      << " " << 1.0/acos(t) - acos_inv(t)      << " "
                   << acos_inv_q(t)    << " " << 1.0/acos(t) - acos_inv_q(t)    << " "
                   << std::endl;
