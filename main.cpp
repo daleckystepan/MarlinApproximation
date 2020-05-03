@@ -86,7 +86,7 @@ int main()
 
         double x2 = 0.5*x0 + 0.5;
 
-        //acos inv
+        //acos_inv
         x0 = 2*x0 - 1;
         y0 = 1.0/acos(x0)*(i==0?1:c_inv);
         x1 = 2*x1 - 1;
@@ -94,16 +94,13 @@ int main()
         jd_lut_k_inv[i] = (y0-y1)/(x0-x1);
         jd_lut_b_inv[i] = (y1*x0 - y0*x1)/(x0-x1);
         
-        // Q
+        // acos_inv_q
         y0 = 1.0/acos(x0)*(i==0?1:c_inv_q);
-
         x2 = 2*x2 - 1;
         double y2 = 1.0/acos(x2)*c_inv_q;
-
         // Center between x0 and x2
         x1 = cos(1.0/y0/2 + 1.0/y2/2);
         y1 = 1.0/acos(x1)*c_inv_q;
-
         double d = 1.0/((x0-x1)*(x0-x2)*(x2-x1));
         //std::cerr << d << std::endl;
         jd_lut_A[i] = - d*x0*x0*x1*y2 + d*x0*x0*x2*y1 + d*x0*x1*x1*y2 - d*x0*x2*x2*y1 - d*x1*x1*x2*y0 + d*x1*x2*x2*y0;
