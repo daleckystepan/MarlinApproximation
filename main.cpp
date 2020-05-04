@@ -3,7 +3,7 @@
 #include <math.h>
 #include <float.h>
 
-const int16_t jd_lut_count = 15;
+const int16_t jd_lut_count = 12;
 const uint16_t jd_lut_tll = 1 << jd_lut_count;
 const int16_t jd_lut_tll0 = __builtin_clz( jd_lut_tll ) + 1;
 
@@ -119,7 +119,7 @@ int main()
     double x0 = (pow(2,jd_lut_count-1) - 1)/pow(2,jd_lut_count-1);
     x0 = 2*x0 - 1;
     double y0 = 1.0/acos(x0)*c_inv;
-    double x1 = 0.999999f; // Maximum according to Marlin condition in planner.cpp
+    double x1 = 0.999999; // Maximum according to Marlin condition in planner.cpp
     double y1 = 1.0/acos(x1);
     jd_lut_k_inv[jd_lut_count-1] = (y0-y1)/(x0-x1);
     jd_lut_b_inv[jd_lut_count-1] = (y1*x0 - y0*x1)/(x0-x1);
@@ -128,8 +128,10 @@ int main()
     x0 = (pow(2,jd_lut_count-1) - 1)/pow(2,jd_lut_count-1);
     x0 = 2*x0 - 1;
     y0 = 1.0/acos(x0)*c_inv_q;
-    double x2 = 0.999999f;
+    double x2 = 0.999999;
     double y2 = 1.0/acos(x2);
+    x2 = 1;  // override values to have reasonable results
+    y2 = 60;
     // Center between x0 and x2
     x1 = cos(1.0/y0/2 + 1.0/y2/2);
     y1 = 1.0/acos(x1)*c_inv_q;

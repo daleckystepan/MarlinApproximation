@@ -4,7 +4,7 @@ set terminal qt font "Open Sans"
 set multiplot layout 2,2 rowsfirst
 
 #set xrange [-1:0.95]
-set yrange [0:5]
+set yrange [0:10]
 plot "plot.dat" using 1:2 with lines title "1/acos", \
              "" using 1:3 with lines title "1/jd marlin", \
              "" using 1:5 with lines title "1/approx", \
@@ -28,7 +28,7 @@ plot "plot.dat" using 1:2 with lines title "1/acos", \
              "" using 1:7 with lines title "acosInv", \
              "" using 1:9 with lines title "acosInvQ"
 
-set xrange [0.999:]
+set xrange [0.998:]
 set yrange [-5:5]
 plot 0, \
      "plot.dat" using 1:4 with lines title "1/acos(x) - 1/jd marlin", \
