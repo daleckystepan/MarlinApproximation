@@ -3,7 +3,7 @@
 #include <math.h>
 #include <float.h>
 
-const int16_t jd_lut_count = 12;
+const int16_t jd_lut_count = 9;
 const uint16_t jd_lut_tll = 1 << jd_lut_count;
 const int16_t jd_lut_tll0 = __builtin_clz( jd_lut_tll ) + 1;
 
@@ -38,23 +38,23 @@ inline float approx(float junction_cos_theta)
     const int16_t idx = (t == 0.0f) ? 0 : __builtin_clz(uint16_t((1.0f - t) * jd_lut_tll)) - jd_lut_tll0;
     float junction_theta = t * jd_lut_k[idx]+ jd_lut_b[idx];
     if (neg < 0) junction_theta = M_PI - junction_theta;
-              return junction_theta;
     return junction_theta;
 }
 
 inline float acos_inv(float x)
 {
-    const float t = (x+1)*0.5;
+    //const float t = (x+1)*0.5;
+    const float t = 3*x-2;
     const int16_t idx = (t == 0.0f) ? 0 : __builtin_clz(uint16_t((1.0f - t) * jd_lut_tll)) - jd_lut_tll0;
     return x * jd_lut_k_inv[idx] + jd_lut_b_inv[idx];
 }
 
 inline float acos_inv_q(float x)
 {
-    const float t = (x+1)*0.5;
+    //const float t = (x+1)*0.5;
+    const float t = 3 * x - 2;
     const int16_t idx = (t == 0.0f) ? 0 : __builtin_clz(uint16_t((1.0f - t) * jd_lut_tll)) - jd_lut_tll0;
-    const float ret =  x * (x * jd_lut_C[idx] + jd_lut_B[idx]) + jd_lut_A[idx];  // Improves precision
-    return ret;
+    return  x * (x * jd_lut_C[idx] + jd_lut_B[idx]) + jd_lut_A[idx];  // Improves precision
 }
 
 void printLUT(const char *name, float *lut)
@@ -87,16 +87,19 @@ int main()
         double x2 = 0.5*x0 + 0.5;
 
         //acos_inv
-        x0 = 2*x0 - 1;
+        //x0 = 2*x0 - 1;
+        x0 = 1.0/3.0*x0 + 2.0/3.0;
         y0 = 1.0/acos(x0)*(i==0?1:c_inv);
-        x1 = 2*x1 - 1;
+        //x1 = 2*x1 - 1;
+        x1 = 1.0/3.0*x1 + 2.0/3.0;
         y1 = 1.0/acos(x1)*c_inv;
         jd_lut_k_inv[i] = (y0-y1)/(x0-x1);
         jd_lut_b_inv[i] = (y1*x0 - y0*x1)/(x0-x1);
         
         // acos_inv_q
         y0 = 1.0/acos(x0)*(i==0?1:c_inv_q);
-        x2 = 2*x2 - 1;
+        //x2 = 2*x2 - 1;
+        x2 = 1.0/3.0*x2 + 2.0/3.0;
         double y2 = 1.0/acos(x2)*c_inv_q;
         // Center between x0 and x2
         x1 = cos(1.0/y0/2 + 1.0/y2/2);
@@ -117,7 +120,8 @@ int main()
 
     // Last values for approx-inv
     double x0 = (pow(2,jd_lut_count-1) - 1)/pow(2,jd_lut_count-1);
-    x0 = 2*x0 - 1;
+    //x0 = 2*x0 - 1;
+    x0 = 1.0/3.0*x0 + 2.0/3.0;
     double y0 = 1.0/acos(x0)*c_inv;
     double x1 = 0.999999; // Maximum according to Marlin condition in planner.cpp
     double y1 = 1.0/acos(x1);
@@ -126,7 +130,8 @@ int main()
 
     // Last values for approx-inv Q
     x0 = (pow(2,jd_lut_count-1) - 1)/pow(2,jd_lut_count-1);
-    x0 = 2*x0 - 1;
+    //x0 = 2*x0 - 1;
+    x0 = 1.0/3.0*x0 + 2.0/3.0;
     y0 = 1.0/acos(x0)*c_inv_q;
     double x2 = 0.999999;
     double y2 = 1.0/acos(x2);
